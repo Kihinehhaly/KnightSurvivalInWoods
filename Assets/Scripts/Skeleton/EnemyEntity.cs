@@ -22,14 +22,16 @@ public class EnemyEntity : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _enemyAI = GetComponent<EnemyAI>();
     }
+
     private void Start()
     {
         _currentHealth = _enemySO.enemyHelth;
     }
+
     public void TakeDamage(int damage)
     {
         _currentHealth -= damage;
-        OnTakeHit.Invoke(this, EventArgs.Empty);
+        OnTakeHit?.Invoke(this, EventArgs.Empty); // Добавил знак `?`, чтобы игра не вылетала, если на событие никто не подписался
         DetectDeath();
     }
 
@@ -37,6 +39,7 @@ public class EnemyEntity : MonoBehaviour
     {
         _polygonCollider2D.enabled = false;
     }
+
     public void PolygonColliderTurnOn()
     {
         _polygonCollider2D.enabled = true;
@@ -49,12 +52,21 @@ public class EnemyEntity : MonoBehaviour
             player.TakeDamage(transform, _enemySO.enemyDamageAmount);
         }
     }
+
     private void DetectDeath()
     {
         if (_currentHealth <= 0)
         {
             _boxCollider2D.enabled = false;
             _polygonCollider2D.enabled = false;
+
+            // --- КОД ДЛЯ СПАВНА МОНЕТОК ТУТ ---
+            // Пытаемся найти компонент LootSpawner на этом враге
+            if (TryGetComponent(out LootSpawner lootSpawner))
+            {
+                lootSpawner.SpawnLoot(); // Если нашли — выбрасываем монеты!
+            }
+            // ----------------------------------
 
             _enemyAI.SetDeathState();
 
