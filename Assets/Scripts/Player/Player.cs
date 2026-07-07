@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float movingSpeed = 10f;
     [SerializeField] private int maxHealth = 20;
     [SerializeField] private float damageRecoveryTime = 0.5f;
+    [SerializeField] private GameOverManager gameOverManager;
     [Space(20)]
     [SerializeField] private int dashSpeed = 4;
     [SerializeField] private float dashTime = 0.2f;
@@ -99,7 +100,10 @@ public class Player : MonoBehaviour
 
             OnPlayerDeath?.Invoke(this, EventArgs.Empty);
 
-            SceneManager.LoadScene("Menu");
+            if (gameOverManager != null)
+            {
+                gameOverManager.ShowGameOverScreen();
+            }
         }
 
     }
