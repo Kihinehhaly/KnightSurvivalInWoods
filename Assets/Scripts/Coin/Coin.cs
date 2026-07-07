@@ -27,13 +27,18 @@ public class Coin : MonoBehaviour
         // Если время задержки еще не прошло, игнорируем касание
         if (_currentTimer > 0) return;
 
-        // Проверяем, есть ли на объекте, который коснулся монеты, скрипт Player
+        // Проверяем, есть ли на коснувшемся объекте скрипт Player
         if (collision.TryGetComponent(out Player player))
         {
-            Debug.Log("Монетка успешно подобрана рыцарем (через GetComponent)!");
+            Debug.Log("Монетка успешно подобрана рыцарем!");
 
-            // ТУТ в будущем будет прибавление к счетчику монет, например:
-            // ScoreManager.instance.AddMoney(1);
+            // --- ОБНОВЛЕННЫЙ КОД ТУТ ---
+            // Стучимся к нашему менеджеру и просим прибавить 1 монетку
+            if (CoinManager.instance != null)
+            {
+                CoinManager.instance.AddCoin(1);
+            }
+            // ---------------------------
 
             // Уничтожаем монету со сцены
             Destroy(gameObject);
